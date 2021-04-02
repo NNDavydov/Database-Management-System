@@ -1,0 +1,6 @@
+// Copyright 2021 Davydov Nikolay <davy.nikola@gmail.com>
+
+#ifndef SEMESTER2_HOMEWORK_1_BRANCH_FACULTIES_H
+#define SEMESTER2_HOMEWORK_1_BRANCH_FACULTIES_H
+
+#endif //SEMESTER2_HOMEWORK_1_BRANCH_FACULTIES_H
