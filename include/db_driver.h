@@ -6,6 +6,14 @@
 #include <filesystem>
 #include <iostream>
 
+namespace fs = std::filesystem;
+
+namespace config {
+    char separator = fs::path::preferred_separator;
+    std::string path = fs::current_path();
+    std::string directory = "myDB";
+}
+
 void menu() {
     setlocale(LC_ALL, "Russian");
     std::cout.fixed;
@@ -25,13 +33,35 @@ void menu() {
 
 }
 
-void create_db();
+void create_db(const std::string &name) {
+    try {
+        fs::create_directory(config::path + config::separator + config::directory + config::separator + name);
+    }
+    catch (fs::filesystem_error) {
+        fs::create_directory(config::path + config::separator + config::directory);
+        fs::create_directory(config::path + config::separator + config::directory + config::separator + name);
+    }
+}
 
-void print_db();
+void print_db() {
+    for (auto &temp : fs::recursive_directory_iterator(config::path + config::separator + config::directory)) {
+        std::cout << temp << "\n";
+    }
+    return;
+}
 
-void delete_db();
+void delete_db(const std::string &name) {
+    fs::remove_all(config::path + config::separator + config::directory + config::separator + name);
+}
 
-void open_db();
+void rename_db(const std::string &name, const std::string &new_name){
+    const fs::path path = config::path+config::separator+config::directory;
+    fs::rename(path/name, path/new_name);
+}
+
+void open_db(){
+
+}
 
 void save_db();
 
