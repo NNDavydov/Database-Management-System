@@ -15,38 +15,38 @@ private:
     std::string name_ = "";
     std::string NYK_ = "";
     size_t num_department_ = 0;
-    std::multimap <std::string, std::vector> list_disciplines_;
-    std::multimap <std::string, size_t> list_num_teachers_;
+    std::map<std::string, std::vector<std::string>> list_disciplines_;
+    std::map<std::string, size_t> list_num_teachers_;
 public:
-    BasicFaculties(std::string &name, std::string NYK, size_t num_department,
-                   std::multimap <std::string, std::vector> &list_disciplines,
-                   std::multimap <std::string, size_t> &list_num_teachers);
+    BasicFaculties();
 
-    void set_name(std::string &name);
+    BasicFaculties(const std::string &name, const std::string NYK, const size_t num_department,
+                   const std::map<std::string, std::vector<std::string>> &list_disciplines,
+                   const std::map<std::string, size_t> &list_num_teachers);
 
-    void set_NUK(std::string &NYK);
+    void set_name(const std::string &name);
 
-    void set_num_departament(size_t num_departament);
+    void set_NUK(const std::string &NYK);
 
-    void set_list_disciplines(std::multimap <std::string, std::vector> list_disciplines);
+    void set_num_departament(const size_t num_departament);
 
-    void set_list_num_teachers(std::multimap <std::string, size_t> list_num_teachers);
+    void set_list_disciplines(const std::map<std::string, std::vector<std::string>> list_disciplines);
 
-    std::string &set_name();
+    void set_list_num_teachers(const std::map<std::string, size_t> list_num_teachers);
 
-    std::string &set_NUK();
+    const std::string &get_name();
 
-    size_t set_num_departament();
+    const std::string &get_NUK();
 
-    std::multimap <std::string, std::vector> set_list_disciplines();
+    const size_t get_num_departament();
 
-    std::multimap <std::string, size_t> set_list_num_teachers();
+    const std::map<std::string, std::vector<std::string>> &get_list_disciplines();
+
+    const std::map<std::string, size_t> &get_list_num_teachers();
 
     size_t count_teachers();
 
-    Faculties *search(std::string &name);
-
-    ~BasicFaculties() = default;
+    ~BasicFaculties();
 };
 
 #endif //SEMESTER_BASIC_FACULTIES_H
