@@ -10,19 +10,17 @@
 
 #include "faculties.h"
 
-class BasicFaculties : public Faculties {
+class Basic_faculties : public Faculties {
 private:
     std::string name_ = "";
     std::string NYK_ = "";
     size_t num_department_ = 0;
-    std::map<std::string, std::vector<std::string>> list_disciplines_;
-    std::map<std::string, size_t> list_num_teachers_;
+    std::vector<Cathedra::Cathedra> list_cathedra_;
 public:
-    BasicFaculties();
+    Basic_faculties();
 
-    BasicFaculties(const std::string &name, const std::string NYK, const size_t num_department,
-                   const std::map<std::string, std::vector<std::string>> &list_disciplines,
-                   const std::map<std::string, size_t> &list_num_teachers);
+    Basic_faculties(const std::string &name, const std::string &NYK, const size_t num_department,
+                    const std::vector<Cathedra::Cathedra> &list_cathedra);
 
     void set_name(const std::string &name);
 
@@ -30,23 +28,19 @@ public:
 
     void set_num_departament(const size_t num_departament);
 
-    void set_list_disciplines(const std::map<std::string, std::vector<std::string>> list_disciplines);
+    void set_list_cathedra(const std::vector<Cathedra::Cathedra> &list_cathedra);
 
-    void set_list_num_teachers(const std::map<std::string, size_t> list_num_teachers);
+    std::string get_name() const;
 
-    const std::string &get_name();
+    std::string get_NUK() const;
 
-    const std::string &get_NUK();
+    size_t get_num_departament() const;
 
-    const size_t get_num_departament();
-
-    const std::map<std::string, std::vector<std::string>> &get_list_disciplines();
-
-    const std::map<std::string, size_t> &get_list_num_teachers();
+    std::vector<Cathedra::Cathedra> get_list_cathedra() const;
 
     size_t count_teachers();
 
-    ~BasicFaculties();
+    ~Basic_faculties();
 };
 
 #endif //SEMESTER_BASIC_FACULTIES_H

@@ -1,78 +1,65 @@
 // Copyright 2021 Davydov Nikolay <davy.nikola@gmail.com>
 #include "basic_faculties.h"
 
-BasicFaculties::BasicFaculties() = default;
+Basic_faculties::Basic_faculties() = default;
 
 
-BasicFaculties::BasicFaculties(const std::string &name, const std::string NYK, const size_t num_department,
-                               const std::map<std::string, std::vector<std::string>> &list_disciplines,
-                               const std::map<std::string, size_t> &list_num_teachers) : name_(name), NYK_(NYK),
-                                                                                         num_department_(
-                                                                                                 num_department),
-                                                                                         list_disciplines_(
-                                                                                                 list_disciplines),
-                                                                                         list_num_teachers_(
-                                                                                                 list_num_teachers) {}
+Basic_faculties::Basic_faculties(const std::string &name, const std::string &NYK, const size_t num_department,
+                                 const std::vector<Cathedra::Cathedra> &list_cathedra) : name_(name), NYK_(NYK),
+                                                                                        num_department_(num_department),
+                                                                                        list_cathedra_(list_cathedra) {}
 
 
-void BasicFaculties::set_name(const std::string &name) {
+void Basic_faculties::set_name(const std::string &name) {
     name_ = name;
 }
 
 
-void BasicFaculties::set_NUK(const std::string &NYK) {
+void Basic_faculties::set_NUK(const std::string &NYK) {
     NYK_ = NYK;
 }
 
 
-void BasicFaculties::set_num_departament(const size_t num_departament) {
+void Basic_faculties::set_num_departament(const size_t num_departament) {
     num_department_ = num_departament;
 }
 
 
-void BasicFaculties::set_list_disciplines(const std::map<std::string, std::vector<std::string>> list_disciplines) {
-    list_disciplines_ = list_disciplines;
+void Basic_faculties::set_list_cathedra(const std::vector<Cathedra::Cathedra> &list_cathedra) {
+    list_cathedra_ = list_cathedra;
 }
 
 
-void BasicFaculties::set_list_num_teachers(const std::map<std::string, size_t> list_num_teachers) {
-    list_num_teachers_ = list_num_teachers;
-}
-
-
-const std::string &BasicFaculties::get_name() {
+std::string Basic_faculties::get_name() const {
     return name_;
 }
 
 
-const std::string &BasicFaculties::get_NUK() {
+std::string Basic_faculties::get_NUK() const {
     return NYK_;
 }
 
 
-const size_t BasicFaculties::get_num_departament() {
+size_t Basic_faculties::get_num_departament() const {
     return num_department_;
 }
 
 
-const std::map<std::string, std::vector<std::string>> &BasicFaculties::get_list_disciplines() {
-    return list_disciplines_;
+std::vector<Cathedra::Cathedra> Basic_faculties::get_list_cathedra() const {
+    return list_cathedra_;
 }
 
 
-const std::map<std::string, size_t> &BasicFaculties::get_list_num_teachers() {
-    return list_num_teachers_;
-}
-
-
-size_t BasicFaculties::count_teachers() {
+size_t Basic_faculties::count_teachers() {
     size_t num_teachers = 0;
-    for(auto temp: list_num_teachers_){
-        num_teachers += temp.second;
+    for (auto cathedra: list_cathedra_) {
+        for (auto disciplines : cathedra.disciplines_) {
+            num_teachers += disciplines.second;
+        }
     }
 
     return num_teachers;
 }
 
 
-BasicFaculties::~BasicFaculties() = default;
+Basic_faculties::~Basic_faculties() = default;

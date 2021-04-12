@@ -5,13 +5,20 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
+namespace Cathedra {
+    struct Cathedra{
+        std::string name_;
+        std::map<std::string, size_t> disciplines_;
+    };
+}
 
 class Faculties {
 public:
     virtual size_t count_teachers() = 0;
 
-    ~Faculties();
+    virtual ~Faculties() {}
 };
 
 #endif //SEMESTER2_HOMEWORK_1_FACULTIES_H

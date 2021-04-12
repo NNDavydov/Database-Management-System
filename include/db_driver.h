@@ -5,76 +5,116 @@
 
 #include <filesystem>
 #include <iostream>
+#include <string>
+#include <fstream>
+
+#include "faculties.h"
+#include "basic_faculties.h"
+#include "branch_faculties.h"
 
 namespace fs = std::filesystem;
 
-namespace config {
-    char separator = fs::path::preferred_separator;
-    std::string path = fs::current_path();
-    std::string directory = "myDB";
-}
-
-void menu() {
-    setlocale(LC_ALL, "Russian");
-    std::cout.fixed;
-    std::cout << "----Создание БД - CREATE_DB <NAME DB>------------------------------------------------------" << "\n";
-    std::cout << "----Вывод на экран существующих БД - PRINT DB>---------------------------------------------" << "\n";
-    std::cout << "----Удаление БД - DELETE_DB <NAME DB>------------------------------------------------------" << "\n";
-    std::cout << "----Переименование БД - RENAME <NAME> <NEW NAME>-------------------------------------------" << "\n";
-    std::cout << "----Открытие БД - OPEN <NAME>--------------------------------------------------------------" << "\n";
-    std::cout << "----Сохранение БД - SAVE <NAME>>-----------------------------------------------------------" << "\n";
-    std::cout << "----Добавление записей в БД - ADD IN <NAME> <PARAM1>=VARIABLE1-----------------------------" << "\n";
-    std::cout << "----Редактирование записей в БД - UPDATE <NAME> SET <PARAM>=VARIABLE WHERE <PARAM>=VARIABLE" << "\n";
-    std::cout << "----Удаление записей в БД - DELETE <NAME> WHERE <PARAM>=VARIABLE---------------------------" << "\n";
-    std::cout << "----Вывод на экран записей в БД - PRINT <NAME_DB>------------------------------------------" << "\n";
-    std::cout << "----Выборка записей по по правилу - SELECT <NAME> WHERE <PARAM>=VARIABLE-------------------" << "\n";
-    std::cout << "----Сохранение выборки как новый БД - SAVE <NAME> <NEW NAME> WHERE <PARAM>=VARIABLE--------" << "\n";
-    std::cout << "----Сортировка записей БД - SORT <NAME> <PARAM>--------------------------------------------" << "\n";
-
-}
-
-void create_db(const std::string &name) {
-    try {
-        fs::create_directory(config::path + config::separator + config::directory + config::separator + name);
+namespace sorting {
+    template<class It, class Out, class Compare = std::less<>>
+    Out merge(It first1, It last1, It first2, It last2, Out out, Compare cmp = Compare{}) {
+        while (first1 != last1) {
+            if (cmp(*first1, *first2)) {
+                *out = *first1;
+                ++first1;
+            } else {
+                *out = *first2;
+                ++first2;
+            }
+            ++out;
+            if (first2 == last2) {
+                std::copy(first1, last1, out);
+                return out;
+            }
+        }
+        std::copy(first2, last2, out);
+        return out;
     }
-    catch (fs::filesystem_error) {
-        fs::create_directory(config::path + config::separator + config::directory);
-        fs::create_directory(config::path + config::separator + config::directory + config::separator + name);
+
+
+    template<class It, class Out, class Compare = std::less<>>
+    Out merge_sort(It first, It last, Out out, Compare cmp = Compare{}) {
+        if (last - first == 2) {
+            return merge(first, first + 1, first + 1, last, out, cmp);
+        } else if (last - first < 2) {
+            *out = *first;
+            return out;
+        }
+        size_t half_size = (last - first) / 2;
+        It middle = first + half_size;
+        std::vector<typename std::iterator_traits<Out>::value_type> vec1(half_size);
+        if ((last - first) % 2 != 0) {
+            ++half_size;
+        }
+        std::vector<typename std::iterator_traits<Out>::value_type> vec2(half_size);
+        merge_sort(first, middle, vec1.begin(), cmp);
+        merge_sort(middle, last, vec2.begin(), cmp);
+        return merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), out, cmp);
     }
 }
 
-void print_db() {
-    for (auto &temp : fs::recursive_directory_iterator(config::path + config::separator + config::directory)) {
-        std::cout << temp << "\n";
+
+class DB_basic_faculties {
+private:
+    char separator_ = fs::path::preferred_separator;
+    std::string path_ = std::string(fs::current_path()) + separator_ + "Basic Faculties";
+    std::string file_name1_ = "basic_faculties.o";
+    std::string name_open_db_ = "";
+    size_t num_reports = 0;
+public:
+    DB_basic_faculties();
+
+    void create_db(const std::string &name_db);
+
+    void print_db();
+
+    void delete_db(const std::string &name_db);
+
+    void rename_db(const std::string &name, const std::string &new_name);
+
+    void open(const std::string &name_db);
+
+    void close();
+
+    void add_report(const Basic_faculties &report);
+
+    void all_reports(std::vector<Basic_faculties>& vec_basic_faculties, std::fstream& file);
+
+    void print_reports();
+
+    template<class Compare = std::less<>>
+    void sort(Compare cmp = Compare{}) {
+        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+                          std::ios::binary | std::ios::in);
+
+        std::vector<Basic_faculties> vec_basic_faculties(num_reports);
+
+        file.read((char *) &num_reports, sizeof(num_reports));
+        all_reports(vec_basic_faculties, file);
+
+        std::vector<Basic_faculties> new_vec_basic_faculties(num_reports);
+
+        file.close();
+        file.open(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+                  std::ios::trunc | std::ios::out);
+        num_reports = 0;
+        file.write((char *) &num_reports, sizeof(num_reports));
+        file.close();
+
+        sorting::merge_sort(vec_basic_faculties.begin(), vec_basic_faculties.end(), new_vec_basic_faculties.begin(), cmp);
+
+        for (auto basic_faculties : new_vec_basic_faculties) {
+            add_report(basic_faculties);
+        }
     }
-    return;
-}
 
-void delete_db(const std::string &name) {
-    fs::remove_all(config::path + config::separator + config::directory + config::separator + name);
-}
+    std::vector<Basic_faculties> select_by_NUK(std::string NUK);
 
-void rename_db(const std::string &name, const std::string &new_name){
-    const fs::path path = config::path+config::separator+config::directory;
-    fs::rename(path/name, path/new_name);
-}
-
-void open_db(){
-
-}
-
-void save_db();
-
-void update_record();
-
-void delete_record();
-
-void print_records();
-
-void sort_records();
-
-void select_record();
-
-void save_new_db();
+    std::vector<Basic_faculties> select_by_num_teachers(size_t num_teachers);
+};
 
 #endif //SEMESTER_DB_DRIVER_H
