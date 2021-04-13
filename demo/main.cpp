@@ -36,26 +36,27 @@ int main() {
     DB_basic_faculties db;
     db.create_db("Db1");
     db.open("Db1");
-    db.add_report(IU);
-    db.add_report(FN);
-    db.add_report(RK);
-    db.print_reports();
+    db.add_record(IU);
+    db.add_record(FN);
+    db.add_record(RK);
+    //db.print_reports();
 
     db.sort([](Basic_faculties lhs, Basic_faculties rhs){
         return lhs.get_name() < rhs.get_name();
     });
-    db.print_reports();
+    //db.print_reports();
 
     db.sort([](Basic_faculties lhs, Basic_faculties rhs){
         return lhs.get_num_departament() < rhs.get_num_departament();
     });
-    db.print_reports();
+    //db.print_reports();
 
     std::vector<Basic_faculties> vec_basic_faculties = db.select_by_num_teachers(10);
     for(size_t i =0; i<vec_basic_faculties.size(); ++i){
         std::cout<<vec_basic_faculties[i].get_name()<<"\n";
     }
 
-
+    //db.delete_record("FN");
+    db.print_reports();
 };
 

@@ -13,7 +13,7 @@ void DB_basic_faculties::create_db(const std::string &name_db) {
     fs::create_directory(path_ + separator_ + name_db);
 
     std::ofstream file(path_ + separator_ + name_db + separator_ + file_name1_, std::ios::binary);
-    file.write((char *) &num_reports, sizeof(num_reports));
+    file.write((char *) &num_records, sizeof(num_records));
     file.close();
 }
 
@@ -44,37 +44,37 @@ void DB_basic_faculties::open(const std::string &name_db) {
     if (fs::is_directory(path_ + separator_ + name_db)) {
         name_open_db_ = name_db;
         std::ifstream file(path_ + separator_ + name_db + separator_ + file_name1_, std::ios::binary);
-        file.read((char *) &num_reports, sizeof(num_reports));
+        file.read((char *) &num_records, sizeof(num_records));
         file.close();
     }
 }
 
 void DB_basic_faculties::close() {
     name_open_db_ = "";
-    num_reports = 0;
+    num_records = 0;
 }
 
-void DB_basic_faculties::add_report(const Basic_faculties &report) {
+void DB_basic_faculties::add_record(const Basic_faculties &record) {
     std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                       std::ios::binary | std::ios::in | std::ios::out);
 
-    ++num_reports;
+    ++num_records;
     file.seekp(0);
-    file.write((char *) &num_reports, sizeof(size_t));
+    file.write((char *) &num_records, sizeof(size_t));
     file.close();
 
 
     file.open(path_ + separator_ + name_open_db_ + separator_ + file_name1_, std::ios::binary | std::ios::app);
 
-    size_t num_departament = report.get_num_departament();
+    size_t num_departament = record.get_num_departament();
     size_t num_discipline;
 
-    file << report.get_name() << std::ends;
-    file << report.get_NUK() << std::ends;
+    file << record.get_name() << std::ends;
+    file << record.get_NUK() << std::ends;
     file.write((char *) &num_departament, sizeof(num_departament));
 
 
-    for (auto &cathedra: report.get_list_cathedra()) {
+    for (auto &cathedra: record.get_list_cathedra()) {
         file << cathedra.name_ << std::ends;
         num_discipline = cathedra.disciplines_.size();
         file.write((char *) &num_discipline, sizeof(num_discipline));
@@ -87,7 +87,7 @@ void DB_basic_faculties::add_report(const Basic_faculties &report) {
     file.close();
 }
 
-void DB_basic_faculties::all_reports(std::vector<Basic_faculties> &vec_basic_faculties, std::fstream &file) {
+void DB_basic_faculties::all_records(std::vector<Basic_faculties> &vec_basic_faculties, std::fstream &file) {
     for (auto &basic_faculties : vec_basic_faculties) {
         std::string name;
         std::string NUK;
@@ -130,10 +130,10 @@ void DB_basic_faculties::print_reports() {
     std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                       std::ios::binary | std::ios::in);
 
-    std::vector<Basic_faculties> vec_basic_faculties(num_reports);
-    file.read((char *) &num_reports, sizeof(num_reports));
+    std::vector<Basic_faculties> vec_basic_faculties(num_records);
+    file.read((char *) &num_records, sizeof(num_records));
 
-    all_reports(vec_basic_faculties, file);
+    all_records(vec_basic_faculties, file);
 
     size_t number = 1;
     for (auto &basic_faculties : vec_basic_faculties) {
@@ -156,18 +156,18 @@ void DB_basic_faculties::print_reports() {
     file.close();
 }
 
-std::vector<Basic_faculties> DB_basic_faculties::select_by_NUK(std::string NUK) {
+std::vector<Basic_faculties> DB_basic_faculties::select_by_NUK(const std::string &NUK) {
     std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                       std::ios::binary | std::ios::in);
 
-    std::vector<Basic_faculties> vec_basic_faculties(num_reports);
+    std::vector<Basic_faculties> vec_basic_faculties(num_records);
 
-    file.read((char *) &num_reports, sizeof(num_reports));
-    all_reports(vec_basic_faculties, file);
+    file.read((char *) &num_records, sizeof(num_records));
+    all_records(vec_basic_faculties, file);
 
     std::vector<Basic_faculties> new_vec_basic_faculties;
 
-    for (size_t i = 0; i < num_reports; ++i) {
+    for (size_t i = 0; i < num_records; ++i) {
         if (vec_basic_faculties[i].get_NUK() == NUK) {
             new_vec_basic_faculties.push_back(vec_basic_faculties[i]);
         }
@@ -180,19 +180,43 @@ std::vector<Basic_faculties> DB_basic_faculties::select_by_num_teachers(size_t n
     std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                       std::ios::binary | std::ios::in);
 
-    std::vector<Basic_faculties> vec_basic_faculties(num_reports);
+    std::vector<Basic_faculties> vec_basic_faculties(num_records);
 
-    file.read((char *) &num_reports, sizeof(num_reports));
-    all_reports(vec_basic_faculties, file);
+    file.read((char *) &num_records, sizeof(num_records));
+    all_records(vec_basic_faculties, file);
 
     std::vector<Basic_faculties> new_vec_basic_faculties;
 
-    for (size_t i = 0; i < num_reports; ++i) {
+    for (size_t i = 0; i < num_records; ++i) {
         if (vec_basic_faculties[i].count_teachers() <= num_teachers) {
             new_vec_basic_faculties.push_back(vec_basic_faculties[i]);
         }
     }
 
     return new_vec_basic_faculties;
+}
+
+void DB_basic_faculties::delete_record(const std::string &name) {
+    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+                      std::ios::binary | std::ios::in);
+
+    std::vector<Basic_faculties> vec_basic_faculties(num_records);
+
+    file.read((char *) &num_records, sizeof(num_records));
+    all_records(vec_basic_faculties, file);
+
+    file.close();
+
+    file.open(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+              std::ios::binary | std::ios::trunc | std::ios::out);
+    file.close();
+    num_records = 0;
+
+    for (size_t i = 0; i < vec_basic_faculties.size(); ++i) {
+        if (vec_basic_faculties[i].get_name() == name) {
+            continue;
+        }
+        add_record(vec_basic_faculties[i]);
+    }
 }
 

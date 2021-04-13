@@ -64,7 +64,7 @@ private:
     std::string path_ = std::string(fs::current_path()) + separator_ + "Basic Faculties";
     std::string file_name1_ = "basic_faculties.o";
     std::string name_open_db_ = "";
-    size_t num_reports = 0;
+    size_t num_records = 0;
 public:
     DB_basic_faculties();
 
@@ -80,9 +80,9 @@ public:
 
     void close();
 
-    void add_report(const Basic_faculties &report);
+    void add_record(const Basic_faculties &record);
 
-    void all_reports(std::vector<Basic_faculties>& vec_basic_faculties, std::fstream& file);
+    void all_records(std::vector<Basic_faculties> &vec_basic_faculties, std::fstream &file);
 
     void print_reports();
 
@@ -91,30 +91,33 @@ public:
         std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                           std::ios::binary | std::ios::in);
 
-        std::vector<Basic_faculties> vec_basic_faculties(num_reports);
+        std::vector<Basic_faculties> vec_basic_faculties(num_records);
 
-        file.read((char *) &num_reports, sizeof(num_reports));
-        all_reports(vec_basic_faculties, file);
+        file.read((char *) &num_records, sizeof(num_records));
+        all_records(vec_basic_faculties, file);
 
-        std::vector<Basic_faculties> new_vec_basic_faculties(num_reports);
+        std::vector<Basic_faculties> new_vec_basic_faculties(num_records);
 
         file.close();
         file.open(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
                   std::ios::trunc | std::ios::out);
-        num_reports = 0;
-        file.write((char *) &num_reports, sizeof(num_reports));
+        num_records = 0;
+        file.write((char *) &num_records, sizeof(num_records));
         file.close();
 
-        sorting::merge_sort(vec_basic_faculties.begin(), vec_basic_faculties.end(), new_vec_basic_faculties.begin(), cmp);
+        sorting::merge_sort(vec_basic_faculties.begin(), vec_basic_faculties.end(), new_vec_basic_faculties.begin(),
+                            cmp);
 
         for (auto basic_faculties : new_vec_basic_faculties) {
-            add_report(basic_faculties);
+            add_record(basic_faculties);
         }
     }
 
-    std::vector<Basic_faculties> select_by_NUK(std::string NUK);
+    std::vector<Basic_faculties> select_by_NUK(const std::string &NUK);
 
-    std::vector<Basic_faculties> select_by_num_teachers(size_t num_teachers);
+    std::vector<Basic_faculties> select_by_num_teachers(const size_t num_teachers);
+
+    void delete_record(const std::string &name);
 };
 
 #endif //SEMESTER_DB_DRIVER_H
