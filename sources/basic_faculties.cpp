@@ -6,8 +6,7 @@ Basic_faculties::Basic_faculties() = default;
 
 Basic_faculties::Basic_faculties(const std::string &name, const std::string &NYK, const size_t num_department,
                                  const std::vector<Cathedra::Cathedra> &list_cathedra) : name_(name), NYK_(NYK),
-                                                                                        num_department_(num_department),
-                                                                                        list_cathedra_(list_cathedra) {}
+                                 num_department_(num_department), list_cathedra_(list_cathedra) {}
 
 
 void Basic_faculties::set_name(const std::string &name) {

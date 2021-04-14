@@ -16,12 +16,15 @@ private:
     std::string name_ = "";
     std::string NYK_ = "";
     size_t num_department_ = 0;
-    std::map<std::string, Cathedra::Cathedra> list_cathedra_;
+    std::vector<Cathedra::Cathedra> list_cathedra_;
+    size_t num_organization_ = 0;
+    std::vector<Cathedra::Cathedra> list_organization_;
 public:
     Branch_faculties();
 
-    Branch_faculties(const std::string &name, const std::string &NYK, const size_t num_department,
-                    const std::map<std::string, Cathedra::Cathedra> &list_cathedra);
+    Branch_faculties(const std::string &name, const std::string &NYK,
+                     const size_t num_department, const std::vector<Cathedra::Cathedra> &list_cathedra,
+                     const size_t num_organization, const std::vector<Cathedra::Cathedra> &list_organization);
 
     void set_name(const std::string &name);
 
@@ -29,7 +32,11 @@ public:
 
     void set_num_departament(const size_t num_departament);
 
-    void set_list_cathedra(const std::map<std::string, Cathedra::Cathedra> &list_cathedra);
+    void set_list_cathedra(const std::vector<Cathedra::Cathedra> &list_cathedra);
+
+    void set_num_organization(const size_t num_organization);
+
+    void set_list_organization(const std::vector<Cathedra::Cathedra> &list_organization);
 
     std::string get_name() const;
 
@@ -37,7 +44,11 @@ public:
 
     size_t get_num_departament() const;
 
-    std::map<std::string, Cathedra::Cathedra>get_list_cathedra() const;
+    std::vector<Cathedra::Cathedra> get_list_cathedra() const;
+
+    size_t get_num_organization() const;
+
+    std::vector<Cathedra::Cathedra> get_list_organization() const;
 
     size_t count_teachers();
 
