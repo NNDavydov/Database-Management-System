@@ -9,7 +9,7 @@
 #include "db_driver_branch_faculties.h"
 
 int main() {
-    Branch_faculties IU("IU", "NOZ", 2,
+  /*  Branch_faculties IU("IU", "NOZ", 2,
                         {{"IU8", {{"MOI",         4}, {"TIMP",   2}}},
                          {"IU7", {{"Programming", 5}, {"Python", 3}}}},
                         3, {{"FBI",        {{"MOI",         4}}},
@@ -61,5 +61,41 @@ int main() {
     db.print_reports();
     db.edit_record("RK", RK2);
     db.print_reports();
+*/
+
+    Basic_faculties IU("IU", "NOZ", 2,
+                       {{"IU8", {{"MOI",         4}, {"TIMP",   2}}},
+                        {"IU7", {{"Programming", 5}, {"Python", 3}}}});
+
+    Basic_faculties FN("FN", "NYK", 3,
+                       {{"FN2",  {{"Linal",  6}, {"Angem",     6}}},
+                        {"FN1",  {{"Matan",  5}, {"Integrals", 7}}},
+                        {"FN10", {{"Fizika", 3}}}});
+
+    Basic_faculties RK("RK", "NYK", 1,
+                       {{"RK11",  {{"IngGraf",  6}}}});
+
+    DB_basic_faculties db;
+    db.create_db("Db1");
+    db.open("Db1");
+    db.add_record(IU);
+    db.add_record(FN);
+    db.add_record(RK);
+    db.print_reports();
+
+    db.sort([](Basic_faculties lhs, Basic_faculties rhs){
+        return lhs.get_name() < rhs.get_name();
+    });
+    db.print_reports();
+
+    db.sort([](Basic_faculties lhs, Basic_faculties rhs){
+        return lhs.get_num_departament() < rhs.get_num_departament();
+    });
+    db.print_reports();
+
+    std::vector<Basic_faculties> vec_basic_faculties = db.select_by_num_teachers(10);
+    for(size_t i =0; i<vec_basic_faculties.size(); ++i){
+        std::cout<<vec_basic_faculties[i].get_name()<<"\n";
+    }
 };
 
