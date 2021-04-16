@@ -18,6 +18,8 @@ private:
 public:
     DB_basic_faculties();
 
+    DB_basic_faculties(const std::string &path);
+
     void open(const std::string &name_db);
 
     void close();

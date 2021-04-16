@@ -11,12 +11,14 @@
 #include "branch_faculties.h"
 #include "db_driver.h"
 
-class DB_branch_faculties: public DB_driver{
+class DB_branch_faculties : public DB_driver {
 private:
     std::vector<Branch_faculties> vec_branch_faculties;
 
 public:
     DB_branch_faculties();
+
+    DB_branch_faculties(const std::string& path);
 
     void open(const std::string &name_db);
 
@@ -30,7 +32,7 @@ public:
 
     template<class Compare = std::less<>>
     void sort(Compare cmp = Compare{}) {
-        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
                           std::ios::trunc | std::ios::out);
 
         std::vector<Branch_faculties> new_vec_branch_faculties(num_records);
@@ -39,7 +41,7 @@ public:
         file.close();
 
         merge_sort(vec_branch_faculties.begin(), vec_branch_faculties.end(), new_vec_branch_faculties.begin(),
-                            cmp);
+                   cmp);
 
         vec_branch_faculties.resize(0);
         for (auto branch_faculties : new_vec_branch_faculties) {

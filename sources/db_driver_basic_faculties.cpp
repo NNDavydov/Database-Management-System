@@ -1,7 +1,10 @@
 #include "db_driver_basic_faculties.h"
 
 
-DB_basic_faculties::DB_basic_faculties(): DB_driver("Basic Faculties") {}
+DB_basic_faculties::DB_basic_faculties() : DB_driver("Basic Faculties") {}
+
+
+DB_basic_faculties::DB_basic_faculties(const std::string &path) : DB_driver("Basic Faculties", path) {}
 
 
 void DB_basic_faculties::open(const std::string &name_db) {
@@ -26,8 +29,8 @@ void DB_basic_faculties::close() {
 
 
 void DB_basic_faculties::add_record(const Basic_faculties &record) {
-    for(size_t i = 0; i < num_records; ++i){
-        if(vec_basic_faculties[i].get_name() == record.get_name()){
+    for (size_t i = 0; i < num_records; ++i) {
+        if (vec_basic_faculties[i].get_name() == record.get_name()) {
             return;
         }
     }
@@ -173,8 +176,8 @@ void DB_basic_faculties::delete_record(const std::string &name) {
 
 
 void DB_basic_faculties::edit_record(const std::string &name_old_record, const Basic_faculties &new_record) {
-    for(size_t i = 0; i < num_records; ++i){
-        if(vec_basic_faculties[i].get_name() == name_old_record){
+    for (size_t i = 0; i < num_records; ++i) {
+        if (vec_basic_faculties[i].get_name() == name_old_record) {
             vec_basic_faculties[i] = new_record;
         }
     }

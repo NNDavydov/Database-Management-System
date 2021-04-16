@@ -15,18 +15,21 @@
 
 namespace fs = std::filesystem;
 
-class DB_driver{
+class DB_driver {
 protected:
     const std::string directory_ = "";
     const char separator_ = fs::path::preferred_separator;
     const std::string path_ = std::string(fs::current_path()) + separator_ + directory_;
-    const std::string file_name1_ = "file_with_reports.o";
+    const std::string file_name1_ = "file_basic_faculties.o";
+    const std::string file_name2_ = "file_branch_faculties.o";
     std::string name_open_db_ = "";
     size_t num_records = 0;
 public:
     DB_driver(const std::string &directory);
 
-    void create_db(const std::string &name_db);
+    DB_driver(const std::string &directory, const std::string &path);
+
+    void create_db(const std::string &name_db, const std::string &type_db);
 
     void print_db();
 

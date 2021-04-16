@@ -1,61 +1,89 @@
 #include "db_driver_gibrid_faculties.h"
 
-DB_gibrid_faculties::DB_gibrid_faculties(): DB_driver("Gibrid Faculties"){}
+DB_gibrid_faculties::DB_gibrid_faculties() :
+        DB_basic_faculties("Gibrid Faculties"), DB_branch_faculties("Gibrid Faculties") {}
+
+
+void DB_gibrid_faculties::create_db(const std::string &name_db) {
+    DB_basic_faculties::create_db(name_db, "basic");
+    DB_branch_faculties::create_db(name_db, "branch");
+}
+
+
+void DB_gibrid_faculties::print_db() {
+    DB_basic_faculties::print_db();
+}
+
+
+void DB_gibrid_faculties::delete_db(const std::string &name_db) {
+    DB_basic_faculties::delete_db(name_db);
+    DB_branch_faculties::delete_db(name_db);
+}
+
+
+void DB_gibrid_faculties::rename_db(const std::string &name, const std::string &new_name) {
+    DB_basic_faculties::rename_db(name, new_name);
+    DB_branch_faculties::rename_db(name, new_name);
+}
 
 
 void DB_gibrid_faculties::open(const std::string &name_db) {
-    if (fs::is_directory(path_ + separator_ + name_db)) {
-        name_open_db_ = name_db;
-        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
-                          std::ios::binary | std::ios::in);
-        file.read((char *) &num_records, sizeof(num_records));
-        vec_gibrid_faculties.resize(num_records);
-        all_records(file);
-        file.close();
-    }
+    DB_basic_faculties::open(name_db);
+    DB_branch_faculties::open(name_db);
 }
 
 
-void DB_gibrid_faculties::close(){
-    name_open_db_ = "";
-    num_records = 0;
-    for(size_t i = 0; i < num_records; ++i){
-        delete[] vec_gibrid_faculties[i];
-    }
-    vec_gibrid_faculties.resize(0);
-    vec_gibrid_faculties.shrink_to_fit();
+void DB_gibrid_faculties::close() {
+    DB_basic_faculties::close();
+    DB_branch_faculties::close();
 }
 
 
-//void DB_gibrid_faculties::add_record(const Branch_faculties &record);
-
-
-//void DB_gibrid_faculties::add_record(const Basic_faculties &record);
-
-
-void DB_gibrid_faculties::all_records(std::fstream &file){
-    for(auto &faculties: vec_gibrid_faculties){
-        std::string type_faculties;
-        std::getline(file, type_faculties, '\0');
-        if(type_faculties == "basic_faculties")
-    }
+void DB_gibrid_faculties::add_record(const Basic_faculties &record) {
+    DB_basic_faculties::add_record(record);
 }
 
 
-//void DB_gibrid_faculties::print_reports();
+void DB_gibrid_faculties::add_record(const Branch_faculties &record) {
+    DB_branch_faculties::add_record(record);
+}
 
 
-//std::pair<Basic_faculties, Branch_faculties> DB_gibrid_faculties::select_by_NUK(const std::string &NUK);
+void DB_gibrid_faculties::print_reports() {
+    DB_basic_faculties::print_reports();
+    DB_branch_faculties::print_reports();
+}
 
 
-//std::pair<Basic_faculties, Branch_faculties> DB_gibrid_faculties::select_by_num_teachers(const size_t num_teachers);
+std::pair<std::vector<Basic_faculties>, std::vector<Branch_faculties>>
+DB_gibrid_faculties::select_by_NUK(const std::string &NUK) {
+    std::pair<std::vector<Basic_faculties>, std::vector<Branch_faculties>> select_vectors;
+    select_vectors.first = DB_basic_faculties::select_by_NUK(NUK);
+    select_vectors.second = DB_branch_faculties::select_by_NUK(NUK);
+    return select_vectors;
+}
 
 
-//void DB_gibrid_faculties::delete_record(const std::string &name);
+std::pair<std::vector<Basic_faculties>, std::vector<Branch_faculties>>
+DB_gibrid_faculties::select_by_num_teachers(const size_t num_teachers) {
+    std::pair<std::vector<Basic_faculties>, std::vector<Branch_faculties>> select_vectors;
+    select_vectors.first = DB_basic_faculties::select_by_num_teachers(num_teachers);
+    select_vectors.second = DB_branch_faculties::select_by_num_teachers(num_teachers);
+    return select_vectors;
+}
 
 
-//void DB_gibrid_faculties::edit_record(const std::string &name_old_record, const Branch_faculties &new_record);
+void DB_gibrid_faculties::delete_record(const std::string &name) {
+    DB_basic_faculties::delete_record(name);
+    DB_branch_faculties::delete_record(name);
+}
 
 
-//void DB_gibrid_faculties::edit_record(const std::string &name_old_record, const Basic_faculties &new_record);
+void DB_gibrid_faculties::edit_record(const std::string &name_old_record, const Basic_faculties &new_record) {
+    DB_basic_faculties::edit_record(name_old_record, new_record);
+}
 
+
+void DB_gibrid_faculties::edit_record(const std::string &name_old_record, const Branch_faculties &new_record) {
+    DB_branch_faculties::edit_record(name_old_record, new_record);
+}

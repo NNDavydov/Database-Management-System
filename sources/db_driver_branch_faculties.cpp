@@ -1,13 +1,16 @@
 #include "db_driver_branch_faculties.h"
 
 
-DB_branch_faculties::DB_branch_faculties(): DB_driver("Branch Faculties") {}
+DB_branch_faculties::DB_branch_faculties() : DB_driver("Branch Faculties") {}
+
+
+DB_branch_faculties::DB_branch_faculties(const std::string &path) : DB_driver("Branch Faculties", path) {}
 
 
 void DB_branch_faculties::open(const std::string &name_db) {
     if (fs::is_directory(path_ + separator_ + name_db)) {
         name_open_db_ = name_db;
-        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+        std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
                           std::ios::binary | std::ios::in);
         file.read((char *) &num_records, sizeof(num_records));
         vec_branch_faculties.resize(num_records);
@@ -32,7 +35,7 @@ void DB_branch_faculties::add_record(const Branch_faculties &record) {
         }
     }
 
-    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
                       std::ios::binary | std::ios::in | std::ios::out);
 
     ++num_records;
@@ -41,7 +44,7 @@ void DB_branch_faculties::add_record(const Branch_faculties &record) {
     file.close();
 
 
-    file.open(path_ + separator_ + name_open_db_ + separator_ + file_name1_, std::ios::binary | std::ios::app);
+    file.open(path_ + separator_ + name_open_db_ + separator_ + file_name2_, std::ios::binary | std::ios::app);
 
     size_t num_departament = record.get_num_departament();
     size_t num_organization = record.get_num_organization();
@@ -207,7 +210,7 @@ void DB_branch_faculties::delete_record(const std::string &name) {
     vec_branch_faculties.resize(0);
     num_records = 0;
 
-    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
                       std::ios::binary | std::ios::trunc | std::ios::out);
     file.write((char *) &num_records, sizeof(num_records));
     file.close();
@@ -222,8 +225,8 @@ void DB_branch_faculties::delete_record(const std::string &name) {
 
 
 void DB_branch_faculties::edit_record(const std::string &name_old_record, const Branch_faculties &new_record) {
-    for(size_t i = 0; i < num_records; ++i){
-        if(vec_branch_faculties[i].get_name() == name_old_record){
+    for (size_t i = 0; i < num_records; ++i) {
+        if (vec_branch_faculties[i].get_name() == name_old_record) {
             vec_branch_faculties[i] = new_record;
         }
     }
@@ -232,7 +235,7 @@ void DB_branch_faculties::edit_record(const std::string &name_old_record, const 
     vec_branch_faculties.resize(0);
     num_records = 0;
 
-    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name1_,
+    std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
                       std::ios::binary | std::ios::trunc | std::ios::out);
     file.write((char *) &num_records, sizeof(num_records));
     file.close();
