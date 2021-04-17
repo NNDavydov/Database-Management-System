@@ -8,7 +8,6 @@ DB_branch_faculties::DB_branch_faculties(const std::string &path) : DB_driver("B
 
 
 void DB_branch_faculties::open(const std::string &name_db) {
-    close();
     if (fs::is_directory(path_ + separator_ + name_db)) {
         name_open_db_ = name_db;
         std::fstream file(path_ + separator_ + name_open_db_ + separator_ + file_name2_,
