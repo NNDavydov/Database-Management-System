@@ -4,7 +4,7 @@ DB_gibrid_faculties::DB_gibrid_faculties() :
         DB_basic_faculties("Gibrid Faculties"), DB_branch_faculties("Gibrid Faculties") {}
 
 
-void DB_gibrid_faculties::create_db(const std::string &name_db) {
+void DB_gibrid_faculties::create_db(const std::string &name_db, const std::string &type) {
     DB_basic_faculties::create_db(name_db, "basic");
     DB_branch_faculties::create_db(name_db, "branch");
 }

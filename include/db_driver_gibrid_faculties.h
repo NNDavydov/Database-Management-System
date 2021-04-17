@@ -15,7 +15,7 @@ class DB_gibrid_faculties : public DB_branch_faculties, public DB_basic_facultie
 public:
     DB_gibrid_faculties();
 
-    void create_db(const std::string &name_db);
+    void create_db(const std::string &name_db, const std::string &type);
 
     void print_db();
 
