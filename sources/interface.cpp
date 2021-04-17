@@ -177,300 +177,297 @@ void interface() {
     words_command(words, command);
 
     while (words.at(0) != "QUIT") {
-        if (words.at(0) == "OPEN_TYPE_DB") {
-            if (words.at(1) == "Basic") {
-                std::cout << "Открыт тип БД - Basic Faculties" << "\n";
-                std::getline(std::cin, command);
-                words_command(words, command);
-
-                while (words.at(0) != "CLOSE_TYPE_DB") {
-                    if (words.at(0) == "CREATE_DB") {
-                        db_basic_faculties.create_db(words.at(1), "basic");
-                        std::cout << "БД создана" << "\n";
-                    }
-                    else if (words.at(0) == "PRINT_DB") {
-                        db_basic_faculties.print_db();
-                    }
-                    else if (words.at(0) == "DELETE_DB") {
-                        db_basic_faculties.delete_db(words.at(1));
-                        std::cout << "БД удалена" << "\n";
-                    }
-                    else if (words.at(0) == "RENAME") {
-                        db_basic_faculties.rename_db(words.at(1), words.at(2));
-                        std::cout << "БД переименована" << "\n";
-                    }
-                    else if (words.at(0) == "OPEN_DB") {
-                        db_basic_faculties.open(words.at(1));
-                        std::cout << "БД открыта" << "\n";
-                    }
-                    else if (words.at(0) == "CLOSE_DB") {
-                        db_basic_faculties.close();
-                        std::cout << "БД закрыта" << "\n";
-                    }
-                    else if (words.at(0) == "DELETE") {
-                        db_basic_faculties.delete_record(words.at(1));
-                        std::cout << "Запись удалена" << "\n";
-                    }
-                    else if (words.at(0) == "PRINT_RECORDS") {
-                        db_basic_faculties.print_reports();
-                    }
-                    else if (words.at(0) == "SELECT_AND_SAVE") {
-                        if (words.at(3) == "NUM_TEACHERS=") {
-                            std::istringstream iss(words.at(4), std::istringstream::in);
-                            size_t num_teachers;
-                            iss >> num_teachers;
-
-                            auto vec_records = db_basic_faculties.select_by_num_teachers(num_teachers);
-                            db_basic_faculties.close();
-                            db_basic_faculties.create_db(words.at(1), "basic");
-                            db_basic_faculties.open(words.at(1));
-                            for (auto record: vec_records) {
-                                db_basic_faculties.add_record(record);
-                            }
-                            std::cout << "\n";
-                            std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
-                        } else if (words.at(3) == "NYK=") {
-                            auto vec_records = db_basic_faculties.select_by_NUK(words.at(4));
-                            db_basic_faculties.close();
-                            db_basic_faculties.create_db(words.at(1), "basic");
-                            db_basic_faculties.open(words.at(1));
-                            for (auto record: vec_records) {
-                                db_basic_faculties.add_record(record);
-                            }
-                            std::cout << "Выборка по НУК сохранена" << "\n";
-                        }
-                    }
-                    else if (words.at(0) == "SORT") {
-                        if (words.at(1) == "name") {
-                            db_basic_faculties.sort([](Basic_faculties lhs, Basic_faculties rhs) {
-                                return lhs.get_name() < rhs.get_name();
-                            });
-                        } else if (words.at(1) == "num_departments") {
-                            db_basic_faculties.sort([](Basic_faculties lhs, Basic_faculties rhs) {
-                                return lhs.get_num_departament() < rhs.get_num_departament();
-                            });
-                        }
-                        std::cout << "Сортировка выполнена" << "\n";
-                    }
-                    else if (words.at(0) == "UPDATE") {
-                        Basic_faculties faculty;
-                        insert_report_Basic_faculties(faculty);
-                        db_basic_faculties.edit_record(words.at(3), faculty);
-                        std::cout << "Запись отредактирована" << "\n";
-                    }
-                    else if (words.at(0) == "ADD") {
-                        Basic_faculties faculty;
-                        insert_report_Basic_faculties(faculty);
-                        db_basic_faculties.add_record(faculty);
-                        std::cout << "Запись добавлена" << "\n";
-                    } else {
-                        std::cout << "Неверная команда!" << "\n";
-                    }
-
+        try {
+            if (words.at(0) == "OPEN_TYPE_DB") {
+                if (words.at(1) == "Basic") {
+                    std::cout << "Открыт тип БД - Basic Faculties" << "\n";
                     std::getline(std::cin, command);
                     words_command(words, command);
-                }
-            } else if (words.at(1) == "Branch") {
-                std::cout << "Открыт тип БД - Branch Faculties" << "\n";
-                std::getline(std::cin, command);
-                words_command(words, command);
 
-                while (words.at(0) != "CLOSE_TYPE_DB") {
-                    if (words.at(0) == "CREATE_DB") {
-                        db_branch_faculties.create_db(words.at(1), "branch");
-                        std::cout << "БД создана" << "\n";
-                    } else if (words.at(0) == "PRINT_DB") {
-                        db_branch_faculties.print_db();
-                    } else if (words.at(0) == "DELETE_DB") {
-                        db_branch_faculties.delete_db(words.at(1));
-                        std::cout << "БД удалена" << "\n";
-                    } else if (words.at(0) == "RENAME") {
-                        db_branch_faculties.rename_db(words.at(1), words.at(2));
-                        std::cout << "БД переименована" << "\n";
-                    } else if (words.at(0) == "OPEN_DB") {
-                        db_branch_faculties.open(words.at(1));
-                        std::cout << "БД открыта" << "\n";
-                    } else if (words.at(0) == "CLOSE_DB") {
-                        db_branch_faculties.close();
-                        std::cout << "БД закрыта" << "\n";
-                    } else if (words.at(0) == "DELETE") {
-                        db_branch_faculties.delete_record(words.at(1));
-                        std::cout << "Запись удалена" << "\n";
-                    } else if (words.at(0) == "PRINT_RECORDS") {
-                        db_branch_faculties.print_reports();
-                    } else if (words.at(0) == "SELECT_AND_SAVE") {
-                        if (words.at(3) == "NUM_TEACHERS=") {
-                            std::istringstream iss(words.at(4), std::istringstream::in);
-                            size_t num_teachers;
-                            iss >> num_teachers;
+                    while (words.at(0) != "CLOSE_TYPE_DB") {
+                        if (words.at(0) == "CREATE_DB") {
+                            db_basic_faculties.create_db(words.at(1), "basic");
+                            std::cout << "БД создана" << "\n";
+                        } else if (words.at(0) == "PRINT_DB") {
+                            db_basic_faculties.print_db();
+                        } else if (words.at(0) == "DELETE_DB") {
+                            db_basic_faculties.delete_db(words.at(1));
+                            std::cout << "БД удалена" << "\n";
+                        } else if (words.at(0) == "RENAME") {
+                            db_basic_faculties.rename_db(words.at(1), words.at(2));
+                            std::cout << "БД переименована" << "\n";
+                        } else if (words.at(0) == "OPEN_DB") {
+                            db_basic_faculties.open(words.at(1));
+                            std::cout << "БД открыта" << "\n";
+                        } else if (words.at(0) == "CLOSE_DB") {
+                            db_basic_faculties.close();
+                            std::cout << "БД закрыта" << "\n";
+                        } else if (words.at(0) == "DELETE") {
+                            db_basic_faculties.delete_record(words.at(1));
+                            std::cout << "Запись удалена" << "\n";
+                        } else if (words.at(0) == "PRINT_RECORDS") {
+                            db_basic_faculties.print_reports();
+                        } else if (words.at(0) == "SELECT_AND_SAVE") {
+                            if (words.at(3) == "NUM_TEACHERS=") {
+                                std::istringstream iss(words.at(4), std::istringstream::in);
+                                size_t num_teachers;
+                                iss >> num_teachers;
 
-                            auto vec_records = db_branch_faculties.select_by_num_teachers(num_teachers);
-                            db_branch_faculties.close();
-                            db_branch_faculties.create_db(words.at(1), "branch");
-                            db_branch_faculties.open(words.at(1));
-                            for (auto record: vec_records) {
-                                db_branch_faculties.add_record(record);
+                                auto vec_records = db_basic_faculties.select_by_num_teachers(num_teachers);
+                                db_basic_faculties.close();
+                                db_basic_faculties.create_db(words.at(1), "basic");
+                                db_basic_faculties.open(words.at(1));
+                                for (auto record: vec_records) {
+                                    db_basic_faculties.add_record(record);
+                                }
+                                std::cout << "\n";
+                                std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
+                            } else if (words.at(3) == "NYK=") {
+                                auto vec_records = db_basic_faculties.select_by_NUK(words.at(4));
+                                db_basic_faculties.close();
+                                db_basic_faculties.create_db(words.at(1), "basic");
+                                db_basic_faculties.open(words.at(1));
+                                for (auto record: vec_records) {
+                                    db_basic_faculties.add_record(record);
+                                }
+                                std::cout << "Выборка по НУК сохранена" << "\n";
                             }
-                            std::cout << "\n";
-                            std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
-                        } else if (words.at(3) == "NYK=") {
-                            auto vec_records = db_branch_faculties.select_by_NUK(words.at(4));
-                            db_branch_faculties.close();
-                            db_branch_faculties.create_db(words.at(1), "branch");
-                            db_branch_faculties.open(words.at(1));
-                            for (auto record: vec_records) {
-                                db_branch_faculties.add_record(record);
+                        } else if (words.at(0) == "SORT") {
+                            if (words.at(1) == "name") {
+                                db_basic_faculties.sort([](Basic_faculties lhs, Basic_faculties rhs) {
+                                    return lhs.get_name() < rhs.get_name();
+                                });
+                            } else if (words.at(1) == "num_departments") {
+                                db_basic_faculties.sort([](Basic_faculties lhs, Basic_faculties rhs) {
+                                    return lhs.get_num_departament() < rhs.get_num_departament();
+                                });
                             }
-                            std::cout << "Выборка по НУК сохранена" << "\n";
-                        }
-                    } else if (words.at(0) == "SORT") {
-                        if (words.at(1) == "name") {
-                            db_branch_faculties.sort([](Branch_faculties lhs, Branch_faculties rhs) {
-                                return lhs.get_name() < rhs.get_name();
-                            });
-                        } else if (words.at(1) == "num_departments") {
-                            db_branch_faculties.sort([](Branch_faculties lhs, Branch_faculties rhs) {
-                                return lhs.get_num_departament() < rhs.get_num_departament();
-                            });
-                        }
-                        std::cout << "Сортировка выполнена" << "\n";
-                    } else if (words.at(0) == "UPDATE") {
-                        Branch_faculties faculty;
-                        insert_report_Branch_faculties(faculty);
-                        db_branch_faculties.edit_record(words.at(3), faculty);
-                        std::cout << "Запись отредактирована" << "\n";
-                    } else if (words.at(0) == "ADD") {
-                        Branch_faculties faculty;
-                        insert_report_Branch_faculties(faculty);
-                        db_branch_faculties.add_record(faculty);
-                        std::cout << "Запись добавлена" << "\n";
-                    } else {
-                        std::cout << "Неверная команда!" << "\n";
-                    }
-
-                    std::getline(std::cin, command);
-                    words_command(words, command);
-                }
-            } else if (words.at(1) == "Gibrid") {
-                std::cout << "Открыт тип БД - Gibrid Faculties" << "\n";
-                std::getline(std::cin, command);
-                words_command(words, command);
-
-                while (words.at(0) != "CLOSE_TYPE_DB") {
-                    if (words.at(0) == "CREATE_DB") {
-                        db_gibrid_faculties.create_db(words.at(1), "gibrid");
-                        std::cout << "БД создана" << "\n";
-                    } else if (words.at(0) == "PRINT_DB") {
-                        db_gibrid_faculties.print_db();
-                    } else if (words.at(0) == "DELETE_DB") {
-                        db_gibrid_faculties.delete_db(words.at(1));
-                        std::cout << "БД удалена" << "\n";
-                    } else if (words.at(0) == "RENAME") {
-                        db_gibrid_faculties.rename_db(words.at(1), words.at(2));
-                        std::cout << "БД переименована" << "\n";
-                    } else if (words.at(0) == "OPEN_DB") {
-                        db_gibrid_faculties.open(words.at(1));
-                        std::cout << "БД открыта" << "\n";
-                    } else if (words.at(0) == "CLOSE_DB") {
-                        db_gibrid_faculties.close();
-                        std::cout << "БД закрыта" << "\n";
-                    } else if (words.at(0) == "DELETE") {
-                        db_gibrid_faculties.delete_record(words.at(1));
-                        std::cout << "Запись удалена" << "\n";
-                    } else if (words.at(0) == "PRINT_RECORDS") {
-                        db_gibrid_faculties.print_reports();
-                    } else if (words.at(0) == "SELECT_AND_SAVE") {
-                        if (words.at(3) == "NUM_TEACHERS=") {
-                            std::istringstream iss(words.at(4), std::istringstream::in);
-                            size_t num_teachers;
-                            iss >> num_teachers;
-
-                            auto vec_records = db_gibrid_faculties.select_by_num_teachers(num_teachers);
-                            db_gibrid_faculties.close();
-                            db_gibrid_faculties.create_db(words.at(1), "gibrid");
-                            db_gibrid_faculties.open(words.at(1));
-                            for (auto record: vec_records.first) {
-                                db_gibrid_faculties.add_record(record);
-                            }
-                            for (auto record: vec_records.second) {
-                                db_gibrid_faculties.add_record(record);
-                            }
-                            std::cout << "\n";
-                            std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
-                        } else if (words.at(3) == "NYK=") {
-                            auto vec_records = db_gibrid_faculties.select_by_NUK(words.at(4));
-                            db_gibrid_faculties.close();
-                            db_gibrid_faculties.create_db(words.at(1), "gibrid");
-                            db_gibrid_faculties.open(words.at(1));
-                            for (auto record: vec_records.first) {
-                                db_gibrid_faculties.add_record(record);
-                            }
-                            for (auto record: vec_records.second) {
-                                db_gibrid_faculties.add_record(record);
-                            }
-                            std::cout << "Выборка по НУК сохранена" << "\n";
-                        }
-                    } else if (words.at(0) == "SORT") {
-                        if (words.at(1) == "name") {
-                            db_gibrid_faculties.sort_Basic_faculties([](Basic_faculties lhs, Basic_faculties rhs) {
-                                return lhs.get_name() < rhs.get_name();
-                            });
-                            db_gibrid_faculties.sort_Branch_faculties([](Branch_faculties lhs, Branch_faculties rhs) {
-                                return lhs.get_name() < rhs.get_name();
-                            });
-                        } else if (words.at(1) == "num_departments") {
-                            db_gibrid_faculties.sort_Basic_faculties([](Basic_faculties lhs, Basic_faculties rhs) {
-                                return lhs.get_num_departament() < rhs.get_num_departament();
-                            });
-                            db_gibrid_faculties.sort_Branch_faculties([](Branch_faculties lhs, Branch_faculties rhs) {
-                                return lhs.get_num_departament() < rhs.get_num_departament();
-                            });
-                        }
-                        std::cout << "Сортировка выполнена" << "\n";
-                    } else if (words.at(0) == "UPDATE") {
-                        std::cout << "Введите тип факультета: ";
-                        std::string type;
-                        std::cin >> type;
-                        if (type == "Basic") {
+                            std::cout << "Сортировка выполнена" << "\n";
+                        } else if (words.at(0) == "UPDATE") {
                             Basic_faculties faculty;
                             insert_report_Basic_faculties(faculty);
-                            db_gibrid_faculties.edit_record(words.at(3), faculty);
+                            db_basic_faculties.edit_record(words.at(3), faculty);
                             std::cout << "Запись отредактирована" << "\n";
-                        } else if (type == "Branch") {
-                            Branch_faculties faculty;
-                            insert_report_Branch_faculties(faculty);
-                            db_gibrid_faculties.edit_record(words.at(3), faculty);
-                            std::cout << "Запись отредактирована" << "\n";
-                        }
-                    } else if (words.at(0) == "ADD") {
-                        std::cout << "Введите тип факультета: ";
-                        std::string type;
-                        std::cin >> type;
-
-                        if (type == "Basic") {
+                        } else if (words.at(0) == "ADD") {
                             Basic_faculties faculty;
                             insert_report_Basic_faculties(faculty);
-                            db_gibrid_faculties.add_record(faculty);
+                            db_basic_faculties.add_record(faculty);
                             std::cout << "Запись добавлена" << "\n";
-                        } else if (type == "Branch") {
-                            Branch_faculties faculty;
-                            insert_report_Branch_faculties(faculty);
-                            db_gibrid_faculties.add_record(faculty);
-                            std::cout << "Запись добавлена" << "\n";
+                        } else {
+                            std::cout << "Неверная команда!" << "\n";
                         }
-                    } else {
-                        std::cout << "Неверная команда!" << "\n";
-                    }
 
+                        std::getline(std::cin, command);
+                        words_command(words, command);
+                    }
+                } else if (words.at(1) == "Branch") {
+                    std::cout << "Открыт тип БД - Branch Faculties" << "\n";
                     std::getline(std::cin, command);
                     words_command(words, command);
+
+                    while (words.at(0) != "CLOSE_TYPE_DB") {
+                        if (words.at(0) == "CREATE_DB") {
+                            db_branch_faculties.create_db(words.at(1), "branch");
+                            std::cout << "БД создана" << "\n";
+                        } else if (words.at(0) == "PRINT_DB") {
+                            db_branch_faculties.print_db();
+                        } else if (words.at(0) == "DELETE_DB") {
+                            db_branch_faculties.delete_db(words.at(1));
+                            std::cout << "БД удалена" << "\n";
+                        } else if (words.at(0) == "RENAME") {
+                            db_branch_faculties.rename_db(words.at(1), words.at(2));
+                            std::cout << "БД переименована" << "\n";
+                        } else if (words.at(0) == "OPEN_DB") {
+                            db_branch_faculties.open(words.at(1));
+                            std::cout << "БД открыта" << "\n";
+                        } else if (words.at(0) == "CLOSE_DB") {
+                            db_branch_faculties.close();
+                            std::cout << "БД закрыта" << "\n";
+                        } else if (words.at(0) == "DELETE") {
+                            db_branch_faculties.delete_record(words.at(1));
+                            std::cout << "Запись удалена" << "\n";
+                        } else if (words.at(0) == "PRINT_RECORDS") {
+                            db_branch_faculties.print_reports();
+                        } else if (words.at(0) == "SELECT_AND_SAVE") {
+                            if (words.at(3) == "NUM_TEACHERS=") {
+                                std::istringstream iss(words.at(4), std::istringstream::in);
+                                size_t num_teachers;
+                                iss >> num_teachers;
+
+                                auto vec_records = db_branch_faculties.select_by_num_teachers(num_teachers);
+                                db_branch_faculties.close();
+                                db_branch_faculties.create_db(words.at(1), "branch");
+                                db_branch_faculties.open(words.at(1));
+                                for (auto record: vec_records) {
+                                    db_branch_faculties.add_record(record);
+                                }
+                                std::cout << "\n";
+                                std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
+                            } else if (words.at(3) == "NYK=") {
+                                auto vec_records = db_branch_faculties.select_by_NUK(words.at(4));
+                                db_branch_faculties.close();
+                                db_branch_faculties.create_db(words.at(1), "branch");
+                                db_branch_faculties.open(words.at(1));
+                                for (auto record: vec_records) {
+                                    db_branch_faculties.add_record(record);
+                                }
+                                std::cout << "Выборка по НУК сохранена" << "\n";
+                            }
+                        } else if (words.at(0) == "SORT") {
+                            if (words.at(1) == "name") {
+                                db_branch_faculties.sort([](Branch_faculties lhs, Branch_faculties rhs) {
+                                    return lhs.get_name() < rhs.get_name();
+                                });
+                            } else if (words.at(1) == "num_departments") {
+                                db_branch_faculties.sort([](Branch_faculties lhs, Branch_faculties rhs) {
+                                    return lhs.get_num_departament() < rhs.get_num_departament();
+                                });
+                            }
+                            std::cout << "Сортировка выполнена" << "\n";
+                        } else if (words.at(0) == "UPDATE") {
+                            Branch_faculties faculty;
+                            insert_report_Branch_faculties(faculty);
+                            db_branch_faculties.edit_record(words.at(3), faculty);
+                            std::cout << "Запись отредактирована" << "\n";
+                        } else if (words.at(0) == "ADD") {
+                            Branch_faculties faculty;
+                            insert_report_Branch_faculties(faculty);
+                            db_branch_faculties.add_record(faculty);
+                            std::cout << "Запись добавлена" << "\n";
+                        } else {
+                            std::cout << "Неверная команда!" << "\n";
+                        }
+
+                        std::getline(std::cin, command);
+                        words_command(words, command);
+                    }
+                } else if (words.at(1) == "Gibrid") {
+                    std::cout << "Открыт тип БД - Gibrid Faculties" << "\n";
+                    std::getline(std::cin, command);
+                    words_command(words, command);
+
+                    while (words.at(0) != "CLOSE_TYPE_DB") {
+                        if (words.at(0) == "CREATE_DB") {
+                            db_gibrid_faculties.create_db(words.at(1), "gibrid");
+                            std::cout << "БД создана" << "\n";
+                        } else if (words.at(0) == "PRINT_DB") {
+                            db_gibrid_faculties.print_db();
+                        } else if (words.at(0) == "DELETE_DB") {
+                            db_gibrid_faculties.delete_db(words.at(1));
+                            std::cout << "БД удалена" << "\n";
+                        } else if (words.at(0) == "RENAME") {
+                            db_gibrid_faculties.rename_db(words.at(1), words.at(2));
+                            std::cout << "БД переименована" << "\n";
+                        } else if (words.at(0) == "OPEN_DB") {
+                            db_gibrid_faculties.open(words.at(1));
+                            std::cout << "БД открыта" << "\n";
+                        } else if (words.at(0) == "CLOSE_DB") {
+                            db_gibrid_faculties.close();
+                            std::cout << "БД закрыта" << "\n";
+                        } else if (words.at(0) == "DELETE") {
+                            db_gibrid_faculties.delete_record(words.at(1));
+                            std::cout << "Запись удалена" << "\n";
+                        } else if (words.at(0) == "PRINT_RECORDS") {
+                            db_gibrid_faculties.print_reports();
+                        } else if (words.at(0) == "SELECT_AND_SAVE") {
+                            if (words.at(3) == "NUM_TEACHERS=") {
+                                std::istringstream iss(words.at(4), std::istringstream::in);
+                                size_t num_teachers;
+                                iss >> num_teachers;
+
+                                auto vec_records = db_gibrid_faculties.select_by_num_teachers(num_teachers);
+                                db_gibrid_faculties.close();
+                                db_gibrid_faculties.create_db(words.at(1), "gibrid");
+                                db_gibrid_faculties.open(words.at(1));
+                                for (auto record: vec_records.first) {
+                                    db_gibrid_faculties.add_record(record);
+                                }
+                                for (auto record: vec_records.second) {
+                                    db_gibrid_faculties.add_record(record);
+                                }
+                                std::cout << "\n";
+                                std::cout << "Выборка по количеству предподавателей сохранена" << "\n";
+                            } else if (words.at(3) == "NYK=") {
+                                auto vec_records = db_gibrid_faculties.select_by_NUK(words.at(4));
+                                db_gibrid_faculties.close();
+                                db_gibrid_faculties.create_db(words.at(1), "gibrid");
+                                db_gibrid_faculties.open(words.at(1));
+                                for (auto record: vec_records.first) {
+                                    db_gibrid_faculties.add_record(record);
+                                }
+                                for (auto record: vec_records.second) {
+                                    db_gibrid_faculties.add_record(record);
+                                }
+                                std::cout << "Выборка по НУК сохранена" << "\n";
+                            }
+                        } else if (words.at(0) == "SORT") {
+                            if (words.at(1) == "name") {
+                                db_gibrid_faculties.sort_Basic_faculties([](Basic_faculties lhs, Basic_faculties rhs) {
+                                    return lhs.get_name() < rhs.get_name();
+                                });
+                                db_gibrid_faculties.sort_Branch_faculties(
+                                        [](Branch_faculties lhs, Branch_faculties rhs) {
+                                            return lhs.get_name() < rhs.get_name();
+                                        });
+                            } else if (words.at(1) == "num_departments") {
+                                db_gibrid_faculties.sort_Basic_faculties([](Basic_faculties lhs, Basic_faculties rhs) {
+                                    return lhs.get_num_departament() < rhs.get_num_departament();
+                                });
+                                db_gibrid_faculties.sort_Branch_faculties(
+                                        [](Branch_faculties lhs, Branch_faculties rhs) {
+                                            return lhs.get_num_departament() < rhs.get_num_departament();
+                                        });
+                            }
+                            std::cout << "Сортировка выполнена" << "\n";
+                        } else if (words.at(0) == "UPDATE") {
+                            std::cout << "Введите тип факультета: ";
+                            std::string type;
+                            std::cin >> type;
+                            if (type == "Basic") {
+                                Basic_faculties faculty;
+                                insert_report_Basic_faculties(faculty);
+                                db_gibrid_faculties.edit_record(words.at(3), faculty);
+                                std::cout << "Запись отредактирована" << "\n";
+                            } else if (type == "Branch") {
+                                Branch_faculties faculty;
+                                insert_report_Branch_faculties(faculty);
+                                db_gibrid_faculties.edit_record(words.at(3), faculty);
+                                std::cout << "Запись отредактирована" << "\n";
+                            }
+                        } else if (words.at(0) == "ADD") {
+                            std::cout << "Введите тип факультета: ";
+                            std::string type;
+                            std::cin >> type;
+
+                            if (type == "Basic") {
+                                Basic_faculties faculty;
+                                insert_report_Basic_faculties(faculty);
+                                db_gibrid_faculties.add_record(faculty);
+                                std::cout << "Запись добавлена" << "\n";
+                            } else if (type == "Branch") {
+                                Branch_faculties faculty;
+                                insert_report_Branch_faculties(faculty);
+                                db_gibrid_faculties.add_record(faculty);
+                                std::cout << "Запись добавлена" << "\n";
+                            }
+                        } else {
+                            std::cout << "Неверная команда!" << "\n";
+                        }
+
+                        std::getline(std::cin, command);
+                        words_command(words, command);
+                    }
+                } else {
+                    std::cout << "Неверный тип БД" << "\n";
                 }
             } else {
-                std::cout << "Неверный тип БД" << "\n";
+                std::cout << "Неверная команда! Чтобы начать работать с БД укажите тип БД." << "\n";
             }
-        } else {
-            std::cout << "Неверная команда! Чтобы начать работать с БД укажите тип БД." << "\n";
         }
+        catch (std::range_error &e) {
+            std::cout << e.what() << "\n";
+        }
+
         std::getline(std::cin, command);
         words_command(words, command);
     }
