@@ -34,7 +34,9 @@ void DB_driver::create_db(const std::string &name_db, const std::string &type_db
 void DB_driver::print_db() {
     for (auto &temp : fs::recursive_directory_iterator(path_)) {
         if (temp.is_directory()) {
-            std::cout << temp << "\n";
+            std::string path = temp.path();
+            std::string name_db = path.substr(path.find_last_of('/') + 1);
+            std::cout << name_db << "\n";
         }
     }
     return;
